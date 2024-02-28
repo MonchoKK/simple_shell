@@ -89,4 +89,3 @@ int main(void)
 	free(lineptr);
 	return (0);
 }
-
