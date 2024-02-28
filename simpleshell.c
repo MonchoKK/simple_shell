@@ -38,26 +38,19 @@ void execute_command(char **args)
 	pid_t pid;
 	int status;
 
-	if (access(args[0], X_OK) == 0 && !access(args[0], F_OK))
+	pid = fork();
+	if (pid == -1)
 	{
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("Fork Failed");
-			exit(EXIT_FAILURE);
-		}
-		if (pid == 0)
-			execve(args[0], args, NULL);
-		else
-		{
-			waitpid(pid, &status, 0);
-			if (WIFEXITED(status) && WEXITSTATUS(status) == 127)
-				printf("Command not found: %s\n", args[0]);
-		}
+		perror("Fork Failed");
+		exit(EXIT_FAILURE);
 	}
+	if (pid == 0)
+		execve(args[0], args, NULL);
 	else
 	{
-		printf("Command not found or not executable: %s\n", args[0]);
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status) && WEXITSTATUS(status) == 127)
+			printf("Command not found: %s\n", args[0]);
 	}
 }
 
