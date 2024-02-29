@@ -9,19 +9,25 @@
 /**
  * tokenizer - converts a string into tokens.
  * @lineptr: the string to be tokenized.
+ * @delim: delimiter to tokenize the string.
  * Return: returns an array of converted tokens.
  */
-char **tokenizer(char *lineptr)
+char **tokenizer(char *lineptr, char *delim)
 {
-	char **args = malloc(MAX_ARGS * sizeof(char *));
-
 	int i = 0;
+	char **args = malloc((MAX_ARGS + 1) * sizeof(char *));
 
-	args[i] = strtok(lineptr, " ");
+	if (args == NULL)
+	{
+		perror("malloc failed");
+		exit(EXIT_FAILURE);
+	}
+
+	args[i] = strtok(lineptr, delim);
 
 	while (args[i] != NULL && i < MAX_ARGS - 1)
 	{
-		args[++i] = strtok(NULL, " ");
+		args[++i] = strtok(NULL, delim);
 	}
 	args[i] = NULL;
 
@@ -45,7 +51,13 @@ void execute_command(char **args)
 		exit(EXIT_FAILURE);
 	}
 	if (pid == 0)
-		execve(args[0], args, NULL);
+	{
+		if (execve(args[0], args, NULL) == -1)
+		{
+			perror("Execve failed");
+			exit(EXIT_FAILURE);
+		}
+	}
 	else
 	{
 		waitpid(pid, &status, 0);
@@ -80,13 +92,15 @@ int main(void)
 
 		str_count = strlen(lineptr);
 
-		lineptr[str_count - 1] = '\0';
+		if (str_count > 0 && lineptr[str_count - 1] == '\n')
+			lineptr[str_count - 1] = '\0';
 
-		args = tokenizer(lineptr);
+		args = tokenizer(lineptr, " ");
 
 		execute_command(args);
+
+		free(args);
 	}
 	free(lineptr);
 	return (0);
 }
-
