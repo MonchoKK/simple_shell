@@ -100,8 +100,8 @@ int execute(char **args)
 int main(void)
 {
 	char *line, **args;
-	int i;
-	ssize_t len = 0;
+	int status;
+	size_t len = 0;
 
 	line = NULL;
 
@@ -122,7 +122,7 @@ int main(void)
 			}
 		}
 		args = tokenizer(line, DELIM);
-		int status = execute(args);
+		status = execute(args);
 
 		if (status == 0)
 			break;
@@ -133,4 +133,3 @@ int main(void)
 	free(args);
 	return (0);
 }
-
