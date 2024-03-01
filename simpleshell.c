@@ -1,12 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/wait.h>
-
-#define DELIM " \t\n"
-#define PROMPT "$ "
-#define MAX_ARGS 30
+#include "shell.h"
 
 /**
  * print_environment - function printing the environment
@@ -15,7 +7,6 @@
  */
 void print_environment(void)
 {
-	extern char **environ;
 	char **env = environ;
 
 	while (*env)
@@ -77,7 +68,7 @@ int execute(char **args)
 		perror("fork failed");
 		return (-1);
 	}
-	if (pid == 0)
+	else if (pid == 0)
 	{
 		if (execve(args[0], args, NULL) == -1)
 		{
