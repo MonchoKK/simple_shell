@@ -6,8 +6,6 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/wait.h>
-#include <errno.h>
-#include <signal.h>
 
 #define DELIM " \t\n"
 #define PROMPT "$ "

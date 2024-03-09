@@ -70,7 +70,7 @@ int execute(char **args)
 	}
 	else if (pid == 0)
 	{
-		if (execve(args[0], args, environ) == -1)
+		if (execvp(args[0], args) == -1)
 		{
 			perror(args[0]);
 			exit(1);
